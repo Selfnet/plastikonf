@@ -22,7 +22,7 @@ class PDF2PNG :
 		os.remove(self.tf)
 
 def format_image(img) :
-	img = Image.open(sys.argv[1]).convert("L")
+	img = Image.open(img).convert("L")
 	out=list(header)
 	randrange=1
 	for y in range(305) :
@@ -36,12 +36,11 @@ def format_image(img) :
 		out.extend(packet)
 
 	out.append(0x1a)
-	img.close()
 	return bytes(out)
 
 def print_to_ip(img ,ip, port=9100) :
 	out = format_image(img)
 	s= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((sys.argv[2], port))
+	s.connect((ip, port))
 	s.send(out)
 	s.close()

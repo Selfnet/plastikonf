@@ -3,6 +3,7 @@ import tempfile
 import subprocess
 import os
 import pymongo
+import time
 
 c = pymongo.MongoClient()
 db = c.plastikonf
@@ -51,4 +52,4 @@ while True :
 			print("ADMIN: "+adminpw)
 			break
 
-	devices_coll.insert({"mac": mac, "pin":pin, "essid":essid, "psk": wpakey, "adminpw":adminpw, "state":"inserted", "tries":0})
+	devices_coll.insert({"mac": mac, "pin":pin, "essid":essid, "psk": wpakey, "adminpw":adminpw, "state":"inserted", "tries":0, "at":int(time.time())})
