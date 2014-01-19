@@ -49,10 +49,9 @@ while True :
 		time.sleep(1)
 		continue
 	
-	print("All done, disconnecting")
+	print("All done")
 	devices_coll.update({"_id":device["_id"]}, {"$set": {"state": "configured"}})
 	#wifi.disconnect()
 	
 	
-	break
 	

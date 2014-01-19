@@ -36,4 +36,4 @@ while True :
 			subprocess.call(("display", png))
 		
 	devices_coll.update({"_id":device["_id"]}, {"$set": {"state": "finalized"}})
-	break
+	

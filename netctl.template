@@ -10,3 +10,4 @@ Address='192.168.0.2/24'
 #DNS=('192.168.1.1')
 # Uncomment this if your ssid is hidden
 #Hidden=yes
+ForceConnect=yes
