@@ -1,0 +1,12 @@
+Description='Plastikonf temporary connection'
+Interface=${iface}
+Connection=wireless
+Security=wpa
+ESSID='${essid}'
+Key='${wpakey}'
+IP=static
+Address='192.168.0.2/24'
+#Gateway='192.168.1.1'
+#DNS=('192.168.1.1')
+# Uncomment this if your ssid is hidden
+#Hidden=yes

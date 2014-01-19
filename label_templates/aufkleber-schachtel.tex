@@ -1,0 +1,35 @@
+\documentclass[10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[default]{cantarell}
+\usepackage{graphicx}
+\usepackage{eurosym}
+\usepackage[absolute]{textpos}
+%\usepackage[left=3mm, right=3mm, top=3mm, bottom=10mm]{geometry}
+
+\usepackage[cm]{fullpage}
+\setlength{\pdfpagewidth}{62mm}
+\setlength{\pdfpageheight}{28.9mm}
+\setlength{\hoffset}{-1.3cm}
+\setlength{\voffset}{-1.3cm}
+\setlength{\textwidth}{5.3cm}
+\setlength{\textheight}{2.8cm}
+\setlength{\parindent}{2mm}
+\newcommand{\essid}{#essid}
+\newcommand{\mac}{#mac}
+\newcommand{\price}{#price}
+\begin{document}
+
+\vspace*{.2cm}
+\noindent \LARGE\essid\\
+
+\vspace*{-.5cm}
+\noindent\price\euro
+\begin{textblock*}{2cm}(4.8cm,1.5cm)
+ \includegraphics[width=2.1cm]{whnetz-logo-sw.pdf}
+\end{textblock*}
+\begin{textblock*}{2cm}(3.2cm,3.9cm)
+\tiny \mac
+\end{textblock*}
+
+\end{document}

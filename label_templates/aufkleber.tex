@@ -1,0 +1,43 @@
+\documentclass[10pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[default]{cantarell}
+\usepackage{graphicx}
+\usepackage[absolute]{textpos}
+\usepackage[pdf]{pstricks}
+\usepackage{pst-barcode}
+%\usepackage[left=3mm, right=3mm, top=3mm, bottom=10mm]{geometry}
+
+\usepackage[cm]{fullpage}
+\setlength{\pdfpagewidth}{62mm}
+\setlength{\pdfpageheight}{28.9mm}
+\setlength{\hoffset}{-1.3cm}
+\setlength{\voffset}{-1.3cm}
+\setlength{\textwidth}{5.3cm}
+\setlength{\textheight}{2.8cm}
+\setlength{\parindent}{2mm}
+
+\newcommand{\essid}{#essid}
+\newcommand{\key}{#psk}
+\newcommand{\pw}{#adminpw}
+\newcommand{\mac}{#mac}
+
+\begin{document}
+\noindent \textbf{WLAN-Name} \\
+\indent \essid \\
+\noindent \textbf{WLAN-Passwort} \\
+\indent \key\\
+\noindent \textbf{Admin-Passwort} \\
+\indent \pw
+\begin{textblock*}{2cm}(4.6cm,1.5cm)
+ \begin{pspicture}(2in,2in)
+    \psbarcode{WIFI:S:\essid;T:WPA;P:\key;;}{width=1 height=1 includetext}{qrcode}
+  \end{pspicture}
+\end{textblock*}
+\begin{textblock*}{1cm}(3.8cm,1.5cm)
+\includegraphics[width=7mm]{whnetz-logo-sw.pdf}
+\end{textblock*}
+\begin{textblock*}{2cm}(3.2cm,3.9cm)
+\tiny \mac
+\end{textblock*}
+\end{document}
