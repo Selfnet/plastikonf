@@ -12,7 +12,8 @@ from hashlib import md5
 files = {
 #"WR720" : "default_config.bin",
 "WR740" :  "configs/default_config_wr740.bin.txt",
-"WR1043" : "configs/default_config_wr1043.bin.txt",
+#"WR1043" : "configs/default_config_wr1043.bin.txt", #old version v1.11
+"WR1043" : "configs/default_config_wr1043-v2.bin.txt", #new version v2.00
 "WR841"	: "configs/default_config_wr841.bin.txt",
 }
 

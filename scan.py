@@ -8,7 +8,11 @@ db = c.plastikonf
 wifis_coll = db.wifis
 
 while True :
-	x=subprocess.check_output(("iwlist", config.iface, "scan"))
+	try :
+		x=subprocess.check_output(("iwlist", config.iface, "scan"))
+	except subprocess.CalledProcessError :
+		time.sleep(1)
+		continue
 	l=x.decode().split("\n")
 	#essids_scanned = filter(len, map(lambda z: z.strip()[7:-1], filter(lambda z: "ESSID:" in z, l)))
 	#macs_scanned = map(lambda z: z.strip().split("Address:")[1].strip().replace(":", ""), filter(lambda z: "Address:" in z, l))
