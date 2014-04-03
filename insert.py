@@ -21,7 +21,7 @@ devices_coll = db.devices
 
 
 while True :
-	say("enter MAC")
+	say("enter meck")
 	mac=input("MAC: ").strip().replace(":", "").upper()
 	if len(tuple(devices_coll.find({"mac": mac}))) > 0 :
 		say("duplicate MAC")
@@ -31,6 +31,7 @@ while True :
 		say("invalid MAC")
 		print("invalid MAC")
 		continue
+	say("enter PIN")
 	pin=input("PIN: ").strip()
 	if len(pin) != 8 or not all(map(str.isdigit, pin)) :
 		say("invalid PIN")
