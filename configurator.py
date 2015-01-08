@@ -21,6 +21,7 @@ while True :
 	old_essid = util.essid_from_mac(device["mac"])
 	pin = device["pin"]
 	print("Selected "+old_essid+", try #"+str(device["tries"]))
+	time.sleep(1)
 	print("Trying to connect to "+old_essid)
 	r=wifi.connect(old_essid, pin)
 	if r["status"] != "ok" :

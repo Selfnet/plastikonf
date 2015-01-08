@@ -4,6 +4,10 @@ import os
 import pymongo
 import time
 import config
+import subprocess
+
+p=subprocess.Popen(("espeak", "-ven", "welcome to plastikonf"), stderr=subprocess.PIPE)
+
 
 if config.speech_enable :
 	import speechd
@@ -11,14 +15,19 @@ if config.speech_enable :
 	speaker.set_output_module("espeak")
 
 def say(m) :
+	global p
 	if config.speech_enable :
-		speaker.speak(m)
+		#speaker.speak(m)
+		#time.sleep(1)
+		p.kill()
+		p = subprocess.Popen(("espeak", "-ven", m), stderr=subprocess.PIPE)
 
 c = pymongo.MongoClient()
 db = c.plastikonf
 devices_coll = db.devices
 
 
+time.sleep(1)
 
 while True :
 	say("enter meck")
@@ -50,7 +59,7 @@ while True :
 		print("ADMIN: "+adminpw)
 		say("please confirm")
 		c=input("[Y]es, [n]ew, [e]dit: ").lower()
-		if c=="y" or c=="" :
+		if c=="y" or c=="" or c =="5411313450157" :
 			break
 		elif c == "n" :
 			continue
