@@ -5,22 +5,19 @@ import pymongo
 import time
 import config
 import subprocess
+import threading
+from queue import Queue
 
-p=subprocess.Popen(("espeak", "-ven", "welcome to plastikonf"), stderr=subprocess.PIPE)
+speechq = Queue()
 
-
-if config.speech_enable :
-	import speechd
-	speaker = speechd.Speaker("plastikonf")
-	speaker.set_output_module("espeak")
+def speechthr() :
+	while True :
+		t = speechq.get()
+		subprocess.call(("espeak", "-ven", "-s250", t), stderr=subprocess.PIPE)
 
 def say(m) :
-	global p
 	if config.speech_enable :
-		#speaker.speak(m)
-		#time.sleep(1)
-		p.kill()
-		p = subprocess.Popen(("espeak", "-ven", m), stderr=subprocess.PIPE)
+		speechq.put(m)
 
 c = pymongo.MongoClient()
 db = c.plastikonf
@@ -28,6 +25,9 @@ devices_coll = db.devices
 
 
 time.sleep(1)
+
+thr = threading.Thread(target=speechthr)
+thr.start()
 
 while True :
 	say("enter meck")

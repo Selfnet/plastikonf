@@ -85,7 +85,7 @@ class Device :
 			return "WR740"
 		elif page.find("WR720") != -1 :
 			return "WR720"
-		elif page.find("WR1043ND") != -1 :
+		elif page.find("WR1043") != -1 :
 			return "WR1043"
 		elif page.find("WR841N v9") != -1 :
 			return "WR841v9"
