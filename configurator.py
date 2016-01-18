@@ -3,6 +3,10 @@ import pymongo
 import time
 import wifi
 import device as devlib
+import sys
+use_csrf = False
+if len(sys.argv) > 1 :
+	use_csrf = True
 
 c = pymongo.MongoClient()
 db = c.plastikonf

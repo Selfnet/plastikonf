@@ -4,6 +4,7 @@ import base64
 import time
 import tempfile
 import os
+import re
 
 from Crypto.Cipher import DES
 from hashlib import md5
@@ -16,6 +17,7 @@ files = {
 "WR1043" : "configs/default_config_wr1043-v2.bin.txt", #new version v2.00
 "WR841"	: "configs/default_config_wr841.bin.txt",
 "WR841v9"	: "configs/default_config_wr841v9.bin.txt",
+"WR841v10"	: "configs/default_config_wr841v10.bin.txt",
 }
 
 prices = {
@@ -44,8 +46,7 @@ class Config :
 		assert len(txt)%8==0
 		return self.crypto.encrypt(txt)
 
-
-class Device :
+class DeviceBase :
 	def __init__(self, ip, password="admin") :
 		self.ip = ip
 		self.password = password
@@ -54,6 +55,43 @@ class Device :
 	
 	def ping(self) :
 		return not bool(subprocess.call(("ping", "-c1", "-W5", self.ip), stdout=-1))
+		
+	def config_init(self) :
+		self.type = self.get_type()
+		#self.type = "WR841"
+		if self.type == False :
+			return False
+		self.config = Config(files[self.type])
+		return True
+	
+	def upload_config_file(self, fi) :
+		r = self.curl("incoming/RouterBakCfgUpload.cfg", ("--form",  "filename=@"+fi))
+		if not r :
+			return False
+		time.sleep(1)
+		r2 = self.curl("userRpm/ConfUpdateTemp.htm")
+		return r2 and r
+	
+	def upload_config(self) :
+		blob = self.config.encrypt()
+		finame = tempfile.mkstemp()[1]
+		fi = open(finame, "wb")
+		fi.write(blob)
+		fi.close()
+		r=self.upload_config_file(finame)
+		os.remove(finame)
+		return r
+	
+	def set_essid(self, essid) :
+		self.config.apply("wlan_mbssid_str 1", essid)
+	
+	def set_wpakey(self, key) :
+		self.config.apply("wlan_PskSecret 1", key)
+	
+	def set_adminpw(self, pw) :
+		self.config.apply("lgn_pwd", pw)
+
+class Device(DeviceBase) :
 	def curl(self, path, opts=("",)) :
 		try :
 			cmd = [
@@ -77,8 +115,9 @@ class Device :
 		return z
 	
 	def get_type(self) :
-		#page = 	self.curl("frames/top.htm")
-		page = 	self.curl("userRpm/StatusRpm.htm")
+		page = 	self.curl("frames/top.htm")
+		#page = 	self.curl("userRpm/StatusRpm.htm")
+		#print(page)
 		if page == False :
 			return False
 		if page.find("WR740N") != -1 :
@@ -89,52 +128,65 @@ class Device :
 			return "WR1043"
 		elif page.find("WR841N v9") != -1 :
 			return "WR841v9"
+		elif page.find("WR841N v10") != -1 :
+			return "WR841v10"
 		elif page.find("WR841N") != -1 :
 			return "WR841"
-		
 		else :
 			return False
 
-	def config_init(self) :
-		self.type = self.get_type()
-		#self.type = "WR841"
-		if self.type == False :
+class DeviceCSRF(DeviceBase) :
+	def curl_login(self, path, opts=("",)) :
+		try :
+			cmd = [
+				"curl",
+				"-b", 'Authorization=Basic%s'%urllib.parse.quote(b" "+base64.b64encode((self.user+":"+md5(self.password.encode()).hexdigest()).encode())),
+				"-s"
+			]
+			cmd.extend(opts)
+			cmd.append("http://%s/%s"%(self.ip, path))
+			print(" ".join(cmd))
+			z=subprocess.check_output(cmd).decode("cp1252")
+		except subprocess.CalledProcessError:
 			return False
-		self.config = Config(files[self.type])
+		return z
+	
+	def curl(self, path, opts=("",)) :
+		try :
+			cmd = [
+				"curl",
+				"-b", 'Authorization=Basic%s'%urllib.parse.quote(b" "+base64.b64encode((self.user+":"+md5(self.password.encode()).hexdigest()).encode())),
+				"-e", "http://%s/%s/userRpm/Index.htm"%(self.ip, self.csrf_token),
+				"-s"
+			]
+			cmd.extend(opts)
+			cmd.append("http://%s/%s/%s"%(self.ip, self.csrf_token, path))
+			print(" ".join(cmd))
+			z=subprocess.check_output(cmd).decode("cp1252")
+		except subprocess.CalledProcessError:
+			return False
+		return z
+	
+	
+	def get_csrf_token(self) :
+		res = self.curl_login("userRpm/LoginRpm.htm?Save=Save")
+		if res == False :
+			return False
+		self.csrf_token = re.findall("/([A-Z]+)/userRpm/Index.htm", res)[0]
 		return True
-	
-	def set_essid(self, essid) :
-		self.config.apply("wlan_mbssid_str 1", essid)
-	
-	def set_wpakey(self, key) :
-		self.config.apply("wlan_PskSecret 1", key)
-	
-	def set_adminpw(self, pw) :
-		self.config.apply("lgn_pwd", pw)
-	
-	def upload_config(self) :
-		blob = self.config.encrypt()
-		finame = tempfile.mkstemp()[1]
-		fi = open(finame, "wb")
-		fi.write(blob)
-		fi.close()
-		r=self.upload_config_file(finame)
-		os.remove(finame)
-		return r
-	
-	def upload_config_file(self, fi) :
-		r = self.curl("incoming/RouterBakCfgUpload.cfg", ("--form",  "filename=@"+fi))
-		if not r :
-			return False
-		time.sleep(1)
-		r2 = self.curl("userRpm/ConfUpdateTemp.htm")
-		return r2 and r
-	
 		
+	def get_type(self) :
+		page = self.curl("userRpm/StatusRpm.htm")
+		if page.find("WR841N v10") != -1 :
+			return "WR841v10"
+		else :
+			return False
+
+
 if __name__ == "__main__" :
-	d = Device("192.168.0.1")
+	d = DeviceCSRF("192.168.0.1")
 	#print(d.ping())
-	print(d.get_type())
+	print(d.get_csrf_token())
 	#print(d.curl(""))
 	#d.config_init()
 	#d.set_essid("Hallo")
