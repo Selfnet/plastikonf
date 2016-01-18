@@ -34,6 +34,11 @@ while True :
 		time.sleep(1)
 		continue
 	print("Connected, trying to upload config")
+	if use_csrf :
+		dev = devlib.DeviceCSRF("192.168.0.1")
+		dev.get_csrf_token()
+	else :
+		dev = devlib.Device("192.168.0.1")
 	dev = devlib.Device("192.168.0.1")
 	if not dev.ping() :
 		print("Device not reachable")
