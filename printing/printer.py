@@ -10,7 +10,7 @@ import subprocess
 header = list(open(os.path.dirname(os.path.realpath(__file__))+"/header.prn", "rb").read())
 
 class PDF2PNG :
-	callstring = "convert -density 400 -resize 720x500 -crop 720x305+0+17 -background white -alpha remove"
+	callstring = "convert -density 300 -crop 720x305+0+20 -background white"
 	def __init__(self, png) :
 		self.tf = tempfile.mkstemp(".png")[1]
 		subprocess.check_call(self.callstring.split()+[png, self.tf])
@@ -30,7 +30,7 @@ def format_image(img) :
 		packet.extend((0,)*90)
 		
 		for x in range(720) :
-			if img.getpixel((719-x,y)) <128+random.randrange(-randrange, randrange) :
+			if img.getpixel((719-x,y)) <250 :
 				packet [int(x/8)+3] |= (1<<(7-(x&7))) 	
 		packet.extend((0,)*14)
 		out.extend(packet)

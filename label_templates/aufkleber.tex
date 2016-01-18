@@ -4,8 +4,7 @@
 \usepackage[default]{cantarell}
 \usepackage{graphicx}
 \usepackage[absolute]{textpos}
-\usepackage[pdf]{pstricks}
-\usepackage{pst-barcode}
+\usepackage{qrcode}
 %\usepackage[left=3mm, right=3mm, top=3mm, bottom=10mm]{geometry}
 
 \usepackage[cm]{fullpage}
@@ -23,6 +22,7 @@
 \newcommand{\mac}{#mac}
 
 \begin{document}
+\pagestyle{empty}
 \noindent \textbf{WLAN-Name} \\
 \indent \essid \\
 \noindent \textbf{WLAN-Passwort} \\
@@ -30,9 +30,7 @@
 \noindent \textbf{Admin-Passwort} \\
 \indent \pw
 \begin{textblock*}{2cm}(4.6cm,1.5cm)
- \begin{pspicture}(2in,2in)
-    \psbarcode{WIFI:S:\essid;T:WPA;P:\key;;}{width=1 height=1 includetext}{qrcode}
-  \end{pspicture}
+    \qrcode[height=2.5cm]{WIFI:S:\essid;T:WPA;P:\key;;}
 \end{textblock*}
 \begin{textblock*}{1cm}(3.8cm,1.5cm)
 \includegraphics[width=7mm]{whnetz-logo-sw.pdf}

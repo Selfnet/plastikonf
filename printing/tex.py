@@ -16,7 +16,7 @@ class TeX2PDF :
 		of.close()
 		for f in extrafiles :
 			shutil.copy(f, self.od)
-		subprocess.check_call(("pdflatex", "-shell-escape", "-interaction", "nonstopmode", "doc.tex"), cwd=self.od, stdout=-1, stderr=-1)
+		subprocess.check_call(("pdflatex", "-interaction", "nonstopmode", "doc.tex"), cwd=self.od, stdout=-1, stderr=-1)
 	
 	def __enter__(self) :
 		return self.od+"/doc.pdf"
