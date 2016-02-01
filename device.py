@@ -15,6 +15,7 @@ files = {
 "WR740" :  "configs/default_config_wr740.bin.txt",
 #"WR1043" : "configs/default_config_wr1043.bin.txt", #old version v1.11
 "WR1043" : "configs/default_config_wr1043-v2.bin.txt", #new version v2.00
+"WR1043v3" : "configs/default_config_wr1043-v2.bin.txt", #new version v2.00
 "WR841"	: "configs/default_config_wr841.bin.txt",
 "WR841v9"	: "configs/default_config_wr841v9.bin.txt",
 "WR841v10"	: "configs/default_config_wr841v10.bin.txt",
@@ -169,16 +170,22 @@ class DeviceCSRF(DeviceBase) :
 	
 	
 	def get_csrf_token(self) :
-		res = self.curl_login("userRpm/LoginRpm.htm?Save=Save")
-		if res == False :
-			return False
-		self.csrf_token = re.findall("/([A-Z]+)/userRpm/Index.htm", res)[0]
+		while True :
+			res = self.curl_login("userRpm/LoginRpm.htm?Save=Save")
+			if res == False :
+				return False
+			x = re.findall("/([A-Z]+)/userRpm/Index.htm", res)
+			if len(x) == 1:
+				self.csrf_token = x[0]
+				return True
 		return True
 		
 	def get_type(self) :
 		page = self.curl("userRpm/StatusRpm.htm")
 		if page.find("WR841N v10") != -1 :
 			return "WR841v10"
+		elif page.find("WR1043ND v3") != -1 :
+			return "WR1043v3"
 		else :
 			return False
 
