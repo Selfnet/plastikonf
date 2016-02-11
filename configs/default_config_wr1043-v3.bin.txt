@@ -997,8 +997,8 @@ lanipv6_prefix_config_type 0
 lanipv6_prefix_length 64
 ipv6basic_wan_enable 1
 ipv6basic_wan_type 2
-Nat_isEnable 0
-HwNat_isEnable 0
+Nat_isEnable 1
+HwNat_isEnable 1
 guest_qos_enable 0
 guest_local_enable 0
 guest_qos_rx 1024
@@ -1013,4 +1013,3 @@ guest_acc_hour 0
 guest_acc_min 0
 guest_acc_weekday 128
 guest_acc_ballday 1
-

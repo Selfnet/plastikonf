@@ -15,7 +15,7 @@ files = {
 "WR740" :  "configs/default_config_wr740.bin.txt",
 #"WR1043" : "configs/default_config_wr1043.bin.txt", #old version v1.11
 "WR1043" : "configs/default_config_wr1043-v2.bin.txt", #new version v2.00
-"WR1043v3" : "configs/default_config_wr1043-v2.bin.txt", #new version v2.00
+"WR1043v3" : "configs/default_config_wr1043-v3.bin.txt", #new version v3.00
 "WR841"	: "configs/default_config_wr841.bin.txt",
 "WR841v9"	: "configs/default_config_wr841v9.bin.txt",
 "WR841v10"	: "configs/default_config_wr841v10.bin.txt",
@@ -188,6 +188,10 @@ class DeviceCSRF(DeviceBase) :
 			return "WR1043v3"
 		else :
 			return False
+			
+	def set_adminpw(self, pw) :
+		self.config.apply("lgn_pwd", md5(pw.encode()).hexdigest())
+
 
 
 if __name__ == "__main__" :
